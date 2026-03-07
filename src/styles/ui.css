@@ -1,0 +1,155 @@
+/* styles/ui.css — shared UI styles for env controls + configurators */
+
+/* ── Fonts ──────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Frosted Glass Base ─────────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+}
+
+.env-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);  /* makes any icon white */
+  transition: opacity 0.15s ease;
+}
+
+
+
+/* ── Environment Controls ───────────────────────────────────────── */
+#env-controls {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Cycle Button ───────────────────────────────────────────────── */
+.env-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.env-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.env-btn:active {
+  transform: scale(0.95);
+}
+
+.env-btn.transitioning {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* ── Tooltip ────────────────────────────────────────────────────── */
+.env-btn::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: 58px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 11px;
+  font-family: system-ui, sans-serif;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.env-btn:hover::before {
+  opacity: 1;
+}
+
+/* ── Mobile ─────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  #env-controls {
+    top: 16px;
+    right: 16px;
+    gap: 6px;
+  }
+
+  .env-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
+
+  .env-btn::before {
+    display: none;
+  }
+}
+
+/* ── Configurator Panel (shared, used later) ────────────────────── */
+#configurator {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 24px;
+  border-radius: 24px 24px 0 0;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#configurator.open {
+  transform: translateY(0);
+}
+
+@media (min-width: 769px) {
+  #configurator {
+    top: 0;
+    bottom: 0;
+    left: auto;
+    right: 0;
+    width: 320px;
+    border-radius: 0;
+    border-top: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    transform: translateX(100%);
+  }
+
+  #configurator.open {
+    transform: translateX(0);
+  }
+}
+

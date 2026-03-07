@@ -1,24 +1,52 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+// main.js — entry point
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+import { createScene, createRenderer } from './core/scene.js'
+import { createCamera } from './core/camera.js'
+import { createLights } from './core/lights.js'
+import { CameraController } from './controllers/CameraController.js'
+import { InputHandler } from './controllers/InputHandler.js'
+import { World } from './world/World.js'
+import { Environment } from './world/Environment.js'
+import { EnvironmentUI } from './ui/EnvironmentUI.js'
 
-setupCounter(document.querySelector('#counter'))
+// Core
+const { scene, clock } = createScene()
+const renderer = createRenderer()
+const camera = createCamera()
+
+// Lights
+createLights(scene)
+
+// World
+const world = new World(scene)
+
+// Environment system
+const environment = new Environment(scene)
+
+// Camera controller
+const cameraController = new CameraController(camera, renderer.domElement)
+
+// Input — clicks and drags
+const inputHandler = new InputHandler(camera, renderer.domElement, world)
+
+// UI
+const environmentUI = new EnvironmentUI(environment)
+
+// Resize handler
+  window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+})
+
+// Animate loop
+function animate() {
+  requestAnimationFrame(animate)
+  const delta = clock.getDelta()
+  cameraController.update(delta)
+  environment.update(delta)
+  renderer.render(scene, camera)
+}
+
+animate()
