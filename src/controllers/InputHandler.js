@@ -1,5 +1,3 @@
-// controllers/InputHandler.js — mouse/touch clicks, raycasting
-
 import * as THREE from 'three'
 
 export class InputHandler {
@@ -43,24 +41,27 @@ export class InputHandler {
     this.dragStartY = e.clientY
   }
 
-  _onMouseMove(e) {
-    const dx = Math.abs(e.clientX - this.dragStartX)
-    const dy = Math.abs(e.clientY - this.dragStartY)
+_onMouseMove(e) {
+  const dx = Math.abs(e.clientX - this.dragStartX)
+  const dy = Math.abs(e.clientY - this.dragStartY)
+  if (dx > this.dragThreshold || dy > this.dragThreshold) {
+    this.isDragging = true
+  }
 
-    if (dx > this.dragThreshold || dy > this.dragThreshold) {
-      this.isDragging = true
-    }
+  this._updateMouse(e.clientX, e.clientY)
+  const hit = this._raycast()
 
-    // Hover detection
-    this._updateMouse(e.clientX, e.clientY)
-    const hit = this._raycast()
-
-    if (hit && hit.object.userData.clickable) {
-      this.domElement.style.cursor = 'pointer'
-    } else {
-      this.domElement.style.cursor = 'grab'
+  let found = false
+  if (hit) {
+    let obj = hit.object
+    while (obj) {
+      if (obj.userData.clickable) { found = true; break }
+      obj = obj.parent
     }
   }
+
+  this.domElement.style.cursor = found ? 'pointer' : 'grab'
+}
 
   _onMouseUp(e) {
     if (this.isDragging) return  // was a drag, not a click
@@ -87,33 +88,24 @@ export class InputHandler {
 
   // ── Core Click Logic ─────────────────────────────────────────────
 
-  _handleClick(clientX, clientY) {
-    this._updateMouse(clientX, clientY)
-    const hit = this._raycast()
+_handleClick(clientX, clientY) {
+  this._updateMouse(clientX, clientY)
+  const hit = this._raycast()
+  if (!hit) return
 
-    if (!hit) return
-
-    const { clickable, type } = hit.object.userData
-
-    if (!clickable) return
-
-    console.log(`Clicked: ${type}`)  // replace with actual handlers later
-
-    switch (type) {
-      case 'bike':
-        this.world.onObjectClick('bike', hit.object.position)
-        break
-      case 'truck':
-        this.world.onObjectClick('truck', hit.object.position)
-        break
-      case 'boat':
-        this.world.onObjectClick('boat', hit.object.position)
-        break
-      case 'hut':
-        this.world.onObjectClick('hut', hit.object.position)
-        break
-    }
+  // Traverse up the parent chain to find the clickable root
+  let obj = hit.object
+  while (obj) {
+    if (obj.userData.clickable) break
+    obj = obj.parent
   }
+
+  if (!obj || !obj.userData.clickable) return
+
+  const type = obj.userData.type
+  console.log(`Clicked: ${type}`)
+  this.world.onObjectClick(type, obj.position)
+}
 
   // ── Raycasting ───────────────────────────────────────────────────
 

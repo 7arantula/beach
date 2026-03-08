@@ -4,11 +4,11 @@ import * as THREE from 'three'
 
 // Isometric config — tweak these to adjust the view
 export const CAMERA_CONFIG = {
-  distance: 25,        // how far from the hut
-  height: 12,          // how high above the scene
-  fov: 35,             // lower fov = more isometric feel
-  defaultAngle: Math.PI / -1.5,     // default horizontal angle in radians
-  target: new THREE.Vector3(0, 0, 0), // hut will sit at world center
+  distance: 45,        // how far from the hut
+  height: 20,          // how high above the scene
+  fov: 40,             // lower fov = more isometric feel
+  defaultAngle: Math.PI / -0.75,     // default horizontal angle in radians
+  target: new THREE.Vector3(0, 10, 0), // hut will sit at world center
 }
 
 export function createCamera() {

@@ -34,7 +34,7 @@ export function createLights(scene) {
   const hemisphere = new THREE.HemisphereLight(
     0x87ceeb,  // sky color
     0xd4a96a,  // ground color
-    0.6
+    2
   )
   scene.add(hemisphere)
 
