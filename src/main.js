@@ -41,12 +41,15 @@ const environmentUI = new EnvironmentUI(environment)
 })
 
 // Animate loop
-function animate() {
-  requestAnimationFrame(animate)
-  const delta = clock.getDelta()
-  cameraController.update(delta)
-  environment.update(delta)
-  renderer.render(scene, camera)
+async function init() {
+  await renderer.init()
+  
+  renderer.setAnimationLoop(() => {
+    const delta = clock.getDelta()
+    cameraController.update(delta)
+    environment.update(delta)
+    renderer.render(scene, camera)
+  })
 }
 
-animate()
+init()
