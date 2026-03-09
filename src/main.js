@@ -14,6 +14,7 @@ const { scene, clock } = createScene()
 const renderer = createRenderer()
 const camera = createCamera()
 
+
 // Lights
 createLights(scene)
 
@@ -21,7 +22,7 @@ createLights(scene)
 const world = new World(scene)
 
 // Environment system
-const environment = new Environment(scene)
+const environment = new Environment(scene, renderer)
 
 // Camera controller
 const cameraController = new CameraController(camera, renderer.domElement)
