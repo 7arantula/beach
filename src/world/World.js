@@ -83,8 +83,8 @@ export class World {
   _loadDynamics() {
     const dynamics = [
       { name: 'ocean',  path: '/models/dynamic/ocean.glb'  },
-      { name: 'birds',  path: '/models/dynamic/birds.glb'  },
-      { name: 'clouds', path: '/models/dynamic/clouds.glb' },
+      // { name: 'birds',  path: '/models/dynamic/birds.glb'  },
+      // { name: 'clouds', path: '/models/dynamic/clouds.glb' },
     ]
 
     dynamics.forEach(({ name, path }) => {
@@ -101,9 +101,9 @@ export class World {
   _loadClickables() {
     const clickables = [
       { type: 'hut',   path: '/models/clickable/hut/hut_lo.glb'    },
-      { type: 'bike',  path: '/models/clickable/bike/bike_lo.glb'   },
-      { type: 'truck', path: '/models/clickable/truck/truck_lo.glb' },
-      { type: 'boat',  path: '/models/clickable/boat/boat_lo.glb'   },
+      // { type: 'bike',  path: '/models/clickable/bike/bike_lo.glb'   },
+      // { type: 'truck', path: '/models/clickable/truck/truck_lo.glb' },
+      // { type: 'boat',  path: '/models/clickable/boat/boat_lo.glb'   },
     ]
 
     clickables.forEach(({ type, path }) => {

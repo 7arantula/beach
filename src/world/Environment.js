@@ -1,8 +1,6 @@
-// world/Environment.js — day/night, weather, ocean mood systems
-
 import * as THREE from 'three'
 import { gsap } from 'gsap'
-import { LIGHTS } from '../core/lights.js'
+import { LIGHTS, createLights } from '../core/lights.js'
 
 const TIME_PRESETS = {
   dawn: {
@@ -40,14 +38,14 @@ const TIME_PRESETS = {
   },
   night: {
     sunColor:         0x1a1a2e,
-    sunIntensity:     0.1,
+    sunIntensity:     -1,
     sunPosition:      new THREE.Vector3(-10, 10, -10),
     ambientColor:     0x0d0d2b,
-    ambientIntensity: 0.15,
+    ambientIntensity: -1,
     skyColor:         0x7ea5c9,
     fogColor:         0x7ea5c9,
-    fogNear:          8,
-    fogFar:           35,
+    fogNear:          25,
+    fogFar:           75,
   },
 }
 
@@ -67,6 +65,9 @@ const OCEAN_PRESETS = {
 export class Environment {
     constructor(scene) {
     this.scene = scene
+
+    // Lights
+    createLights(this.scene)
 
     this.currentTime    = 'day'
     this.currentWeather = 'clear'
@@ -107,6 +108,7 @@ export class Environment {
     const fogColor = new THREE.Color(p.fogColor)
 
     if (duration === 0) {
+
       LIGHTS.sun.color.set(p.sunColor)
       LIGHTS.sun.intensity = p.sunIntensity
       LIGHTS.sun.position.copy(p.sunPosition)

@@ -1,15 +1,14 @@
 import * as THREE from 'three'
 import WebGPURenderer from 'three/src/renderers/webgpu/WebGPURenderer.js'
 
-export function createScene() {
-  const scene = new THREE.Scene()
-  const clock = new THREE.Clock()
+// export function createScene() {
+// const scene = new THREE.Scene()
 
-  return { scene, clock }
-}
+//   return scene
+// }
 
-export function createRenderer() {
-  const canvas = document.getElementById('bg')
+export function createRenderer(canv) {
+  const canvas = document.getElementById(canv)
 
   const renderer = new WebGPURenderer({
     canvas,

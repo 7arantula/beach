@@ -1,54 +1,33 @@
-// main.js — entry point
-
-import { createScene, createRenderer } from './core/scene.js'
+import * as THREE from 'three'
+import { createRenderer } from './core/renderer.js'
 import { createCamera } from './core/camera.js'
-import { createLights } from './core/lights.js'
-import { CameraController } from './controllers/CameraController.js'
-import { InputHandler } from './controllers/InputHandler.js'
 import { World } from './world/World.js'
 import { Environment } from './world/Environment.js'
 import { EnvironmentUI } from './ui/EnvironmentUI.js'
+import Time from './utils/Time.js'
 
-// Core
-const { scene, clock } = createScene()
-const renderer = createRenderer()
-const camera = createCamera()
+const renderer = createRenderer('bg')
+const camera = createCamera(renderer)
 
-
-// Lights
-createLights(scene)
-
-// World
-const world = new World(scene)
-
-// Environment system
-const environment = new Environment(scene, renderer)
-
-// Camera controller
-const cameraController = new CameraController(camera, renderer.domElement)
-
-// Input — clicks and drags
-const inputHandler = new InputHandler(camera, renderer.domElement, world)
-
-// UI
-const environmentUI = new EnvironmentUI(environment)
-
-// Resize handler
-  window.addEventListener('resize', () => {
+window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight
   camera.updateProjectionMatrix()
   renderer.setSize(window.innerWidth, window.innerHeight)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
-// Animate loop
 async function init() {
   await renderer.init()
-  
-  renderer.setAnimationLoop(() => {
-    const delta = clock.getDelta()
-    cameraController.update(delta)
-    environment.update(delta)
+
+  const scene = new THREE.Scene()
+  const world = new World(scene)
+  const environment = new Environment(scene, renderer)
+  const environmentUI = new EnvironmentUI(environment)
+
+  // Time starts AFTER renderer is ready
+  const time = new Time()
+  time.on('tick', () => {
+    environment.update(time.delta / 1000)
     renderer.render(scene, camera)
   })
 }

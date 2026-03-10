@@ -1,3 +1,4 @@
+//import * as THREE from 'three/webgpu'
 import { DirectionalLight } from 'three/src/lights/DirectionalLight.js'
 import { AmbientLight } from 'three/src/lights/AmbientLight.js'
 import { HemisphereLight } from 'three/src/lights/HemisphereLight.js'
@@ -9,6 +10,7 @@ export const LIGHTS = {
 }
 
 export function createLights(scene) {
+  //const sun = new THREE.DirectionalLight(0xfff4e0, 2)
   const sun = new DirectionalLight(0xfff4e0, 2)
   sun.position.set(10, 20, 10)
   sun.castShadow = true
