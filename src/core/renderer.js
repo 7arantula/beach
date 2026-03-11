@@ -1,25 +1,36 @@
-import * as THREE from 'three'
+import * as THREE from 'three/webgpu'
 import WebGPURenderer from 'three/src/renderers/webgpu/WebGPURenderer.js'
 
-// export function createScene() {
-// const scene = new THREE.Scene()
+export default class Renderer {
+  constructor(canvasName, scene, camera) {
+    this.canvas = document.getElementById(canvasName)
+    this.scene = scene;
+    this.camera = camera;
 
-//   return scene
-// }
+    this.createInstance()
+  }
 
-export function createRenderer(canv) {
-  const canvas = document.getElementById(canv)
+  createInstance() {
 
-  const renderer = new WebGPURenderer({
-    canvas,
+  this.instance = new WebGPURenderer({
+    canvas: this.canvas,
     antialias: true,
   })
 
-  renderer.setSize(window.innerWidth, window.innerHeight)
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-  renderer.shadowMap.enabled = true
-  renderer.toneMapping = THREE.ACESFilmicToneMapping
-  renderer.toneMappingExposure = 1.0
+  this.instance.setSize(window.innerWidth, window.innerHeight)
+  this.instance.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  this.instance.shadowMap.enabled = true
+  this.instance.toneMapping = THREE.ACESFilmicToneMapping
+  this.instance.toneMappingExposure = 1.0
+  
+  this.instance.setAnimationLoop(() => {
+    this.update()
+  })
+  }
 
-  return renderer
+  update() {
+  if (this.instance) {
+      this.instance.render(this.scene, this.camera)
+    }
+}
 }

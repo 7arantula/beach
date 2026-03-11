@@ -1,6 +1,6 @@
-import * as THREE from 'three'
+import * as THREE from 'three/webgpu'
 import { gsap } from 'gsap'
-import { LIGHTS, createLights } from '../core/lights.js'
+import Lights from '../core/Lights.js'
 
 const TIME_PRESETS = {
   dawn: {
@@ -62,12 +62,13 @@ const OCEAN_PRESETS = {
   rough:  { waveAmplitude: 0.9, waveFrequency: 2.0, waveSpeed: 1.5 },
 }
 
-export class Environment {
+export default class Environment {
     constructor(scene) {
     this.scene = scene
 
     // Lights
-    createLights(this.scene)
+    this.lights = new Lights(this.scene)
+    console.log(2)
 
     this.currentTime    = 'day'
     this.currentWeather = 'clear'
@@ -78,21 +79,21 @@ export class Environment {
     this._applyTimePreset('day', 0)
   }
 
-  // ── Public API ───────────────────────────────────────────────────
+  //Set functions
 
-  setTime(preset, duration = 2.0) {
+  setTime(preset, duration = 4) {
     if (preset === this.currentTime) return
     this.currentTime = preset
     this._applyTimePreset(preset, duration)
   }
 
-  setWeather(preset, duration = 2.0) {
+  setWeather(preset, duration = 1) {
     if (preset === this.currentWeather) return
     this.currentWeather = preset
     this._applyWeatherPreset(preset, duration)
   }
 
-  setOcean(preset, duration = 2.0) {
+  setOcean(preset, duration = 1) {
     if (preset === this.currentOcean) return
     this.currentOcean = preset
     this._applyOceanPreset(preset, duration)
@@ -102,18 +103,18 @@ export class Environment {
 
   _applyTimePreset(name, duration) {
     const p = TIME_PRESETS[name]
-    if (!p || !LIGHTS.sun) return
+    if (!p || !this.lights.sun) return
 
     const skyColor = new THREE.Color(p.skyColor)
     const fogColor = new THREE.Color(p.fogColor)
 
     if (duration === 0) {
 
-      LIGHTS.sun.color.set(p.sunColor)
-      LIGHTS.sun.intensity = p.sunIntensity
-      LIGHTS.sun.position.copy(p.sunPosition)
-      LIGHTS.ambient.color.set(p.ambientColor)
-      LIGHTS.ambient.intensity = p.ambientIntensity
+      this.lights.sun.color.set(p.sunColor)
+      this.lights.sun.intensity = p.sunIntensity
+      this.lights.sun.position.copy(p.sunPosition)
+      this.lights.ambient.color.set(p.ambientColor)
+      this.lights.ambient.intensity = p.ambientIntensity
       this.scene.background = skyColor
       if (this.scene.fog) {
         this.scene.fog.color.copy(fogColor)
@@ -125,11 +126,11 @@ export class Environment {
       return
     }
 
-    gsap.to(LIGHTS.sun.color, { r: skyColor.r, g: skyColor.g, b: skyColor.b, duration })
-    gsap.to(LIGHTS.sun, { intensity: p.sunIntensity, duration })
-    gsap.to(LIGHTS.sun.position, { x: p.sunPosition.x, y: p.sunPosition.y, z: p.sunPosition.z, duration })
-    gsap.to(LIGHTS.ambient.color, { r: fogColor.r, g: fogColor.g, b: fogColor.b, duration })
-    gsap.to(LIGHTS.ambient, { intensity: p.ambientIntensity, duration })
+    gsap.to(this.lights.sun.color, { r: skyColor.r, g: skyColor.g, b: skyColor.b, duration })
+    gsap.to(this.lights.sun, { intensity: p.sunIntensity, duration })
+    gsap.to(this.lights.sun.position, { x: p.sunPosition.x, y: p.sunPosition.y, z: p.sunPosition.z, duration })
+    gsap.to(this.lights.ambient.color, { r: fogColor.r, g: fogColor.g, b: fogColor.b, duration })
+    gsap.to(this.lights.ambient, { intensity: p.ambientIntensity, duration })
     gsap.to(this.scene.background, { r: skyColor.r, g: skyColor.g, b: skyColor.b, duration })
     gsap.to(this.scene.fog.color, { r: fogColor.r, g: fogColor.g, b: fogColor.b, duration })
     gsap.to(this.scene.fog, { near: p.fogNear, far: p.fogFar, duration })
@@ -141,8 +142,8 @@ export class Environment {
     const t = TIME_PRESETS[this.currentTime]
     if (!p || !t) return
 
-    gsap.to(LIGHTS.sun, { intensity: t.sunIntensity * p.sunMultiplier, duration })
-    gsap.to(LIGHTS.ambient, { intensity: t.ambientIntensity * p.ambientMultiplier, duration })
+    gsap.to(this.lights.sun, { intensity: t.sunIntensity * p.sunMultiplier, duration })
+    gsap.to(this.lights.ambient, { intensity: t.ambientIntensity * p.ambientMultiplier, duration })
 
     // Rain particle system — coming soon
     // if (name === 'rain' || name === 'storm') this.rain.setIntensity(name)
@@ -168,12 +169,12 @@ export class Environment {
   }
 
   _triggerLightning() {
-    if (!LIGHTS.sun) return
-    const originalIntensity = LIGHTS.sun.intensity
+    if (!this.lights.sun) return
+    const originalIntensity = this.lights.sun.intensity
     gsap.timeline()
-      .to(LIGHTS.sun, { intensity: 8,               duration: 0.05 })
-      .to(LIGHTS.sun, { intensity: originalIntensity, duration: 0.1  })
-      .to(LIGHTS.sun, { intensity: 6,               duration: 0.05 })
-      .to(LIGHTS.sun, { intensity: originalIntensity, duration: 0.15 })
+      .to(this.lights.sun, { intensity: 8,               duration: 0.05 })
+      .to(this.lights.sun, { intensity: originalIntensity, duration: 0.1  })
+      .to(this.lights.sun, { intensity: 6,               duration: 0.05 })
+      .to(this.lights.sun, { intensity: originalIntensity, duration: 0.15 })
   }
 }

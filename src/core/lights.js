@@ -1,39 +1,36 @@
-//import * as THREE from 'three/webgpu'
-import { DirectionalLight } from 'three/src/lights/DirectionalLight.js'
-import { AmbientLight } from 'three/src/lights/AmbientLight.js'
-import { HemisphereLight } from 'three/src/lights/HemisphereLight.js'
+import * as THREE from 'three/webgpu'
+// import { DirectionalLight } from 'three/src/lights/DirectionalLight.js'
+// import { AmbientLight } from 'three/src/lights/AmbientLight.js'
+// import { HemisphereLight } from 'three/src/lights/HemisphereLight.js'
 
-export const LIGHTS = {
-  sun: null,
-  ambient: null,
-  hemisphere: null,
-}
+export default class Lights{
+  constructor(scene){
+    this.scene = scene
+    this.createLights(this.scene)
+  }
 
-export function createLights(scene) {
-  //const sun = new THREE.DirectionalLight(0xfff4e0, 2)
-  const sun = new DirectionalLight(0xfff4e0, 2)
-  sun.position.set(10, 20, 10)
-  sun.castShadow = true
-  sun.shadow.mapSize.width = 2048
-  sun.shadow.mapSize.height = 2048
-  sun.shadow.camera.near = 0.5
-  sun.shadow.camera.far = 100
-  sun.shadow.camera.left = -20
-  sun.shadow.camera.right = 20
-  sun.shadow.camera.top = 20
-  sun.shadow.camera.bottom = -20
-  sun.shadow.bias = -0.001
-  scene.add(sun)
+  createLights(scene){
+    this.sun = new THREE.DirectionalLight(0xfff4e0, 2)
+    //this.sun = new DirectionalLight(0xfff4e0, 2)
+    this.sun.position.set(10, 20, 10)
+    this.sun.castShadow = true
+    this.sun.shadow.mapSize.width = 2048
+    this.sun.shadow.mapSize.height = 2048
+    this.sun.shadow.camera.near = 0.5
+    this.sun.shadow.camera.far = 100
+    this.sun.shadow.camera.left = -20
+    this.sun.shadow.camera.right = 20
+    this.sun.shadow.camera.top = 20
+    this.sun.shadow.camera.bottom = -20
+    this.sun.shadow.bias = -0.001
+    scene.add(this.sun)
 
-  const ambient = new AmbientLight(0x87ceeb, 0.4)
-  scene.add(ambient)
+    this.ambient = new THREE.AmbientLight(0x87ceeb, 0.4)
+    scene.add(this.ambient)
 
-  const hemisphere = new HemisphereLight(0x87ceeb, 0xd4a96a, 0.6)
-  scene.add(hemisphere)
+    this.hemisphere = new THREE.HemisphereLight(0x87ceeb, 0xd4a96a, 0.6)
+    scene.add(this.hemisphere)
+    console.log(1)
 
-  LIGHTS.sun = sun
-  LIGHTS.ambient = ambient
-  LIGHTS.hemisphere = hemisphere
-
-  return LIGHTS
+    }
 }

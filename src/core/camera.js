@@ -1,8 +1,6 @@
-// core/camera.js — camera setup and isometric configuration
-
-import * as THREE from 'three'
+import * as THREE from 'three/webgpu'
 import { OrbitControls } from 'three/examples/jsm/Addons.js'
-import Time from '../utils/Time';
+import Time from '../utils/Time.js';
 import { angleDiff } from '../utils/math.js'
 
 // Isometric config — tweak these to adjust the view
@@ -14,64 +12,63 @@ export const CAMERA_CONFIG = {
   target: new THREE.Vector3(0, 0, 0), // hut will sit at world center
 }
 
-let controls = null;
-let diff = 0;
 const originalAzimuth = 2.09;
 
-export function createCamera(renderer) {
-  const camera = new THREE.PerspectiveCamera(
-    CAMERA_CONFIG.fov,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  )
+export default class Camera {
+    constructor() {
 
-  const time = new Time();
-  time.on('tick', () => {
-    update()
-  })
+        this.createInstance()
+    }
 
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.lookAt = CAMERA_CONFIG.target;
-  controls.enableDamping = true
-  controls.dampingFactor = 0.1
-  controls.enablePan = false
-  controls.enableZoom = false
-  controls.minPolarAngle = Math.PI/2 - 0.35
-  controls.maxPolarAngle = Math.PI/2 - 0.35
-  controls.maxAzimuthAngle = -2
-  controls.minAzimuthAngle = 0.2
-  controls.update()
+    createInstance() {
+        this.instance = new THREE.PerspectiveCamera(
+        CAMERA_CONFIG.fov,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    )
 
-  controls.addEventListener('end', function(event) {
-    const currentAzimuth = controls.getAzimuthalAngle()
-    _springBack()
-  });
+    const time = new Time();
+    time.on('tick', () => {
+        this.update()
+    })
 
-  // Position camera at default isometric angle
-  camera.position.set(
-    Math.sin(CAMERA_CONFIG.defaultAngle) * CAMERA_CONFIG.distance,
-    CAMERA_CONFIG.height,
-    Math.cos(CAMERA_CONFIG.defaultAngle) * CAMERA_CONFIG.distance
-  )
+    // Position camera at default isometric angle
+    this.instance.position.set(
+        Math.sin(CAMERA_CONFIG.defaultAngle) * CAMERA_CONFIG.distance,
+        CAMERA_CONFIG.height,
+        Math.cos(CAMERA_CONFIG.defaultAngle) * CAMERA_CONFIG.distance
+    )
+    }
 
-  camera.lookAt(CAMERA_CONFIG.target)
+    createControls(renderer){
+    this.controls = new OrbitControls(this.instance, renderer.domElement);
+    this.controls.lookAt = CAMERA_CONFIG.target;
+    this.controls.enableDamping = true
+    this.controls.dampingFactor = 0.1
+    this.controls.enablePan = false
+    this.controls.enableZoom = false
+    this.controls.minPolarAngle = Math.PI/2 - 0.35
+    this.controls.maxPolarAngle = Math.PI/2 - 0.35
+    this.controls.maxAzimuthAngle = -2
+    this.controls.minAzimuthAngle = 0.2
+    this.controls.update()
 
-  return camera
-}
+    this.controls.addEventListener('end', () => {
+        const currentAzimuth = this.controls.getAzimuthalAngle()
+        this.springBack()
+    });
+    }
 
-//Revert back to original position
+    update() {
+    if (this.controls) {
+        this.controls.update()
+    }
+    }
 
-function _springBack() {
-  const currentAzimuth = controls.getAzimuthalAngle()
-  const diff = angleDiff(originalAzimuth, currentAzimuth)
-  controls.rotateLeft(diff)
-}
-
-
-function update() {
-  if (controls) {
-    controls.update()
-    //console.log(controls.getAzimuthalAngle());
-  }
+    springBack() {
+    const currentAzimuth = this.controls.getAzimuthalAngle()
+    const diff = angleDiff(originalAzimuth, currentAzimuth)
+    this.controls.rotateLeft(diff)
+    }
 }
