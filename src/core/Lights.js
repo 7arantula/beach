@@ -31,8 +31,8 @@ export default class Lights{
     this.ambient = new AmbientLight(0x87ceeb, 0.4)
     scene.add(this.ambient)
 
-    // this.hemisphere = new THREE.HemisphereLight(0x87ceeb, 0xd4a96a, 0.6)
-    this.hemisphere = new HemisphereLight(0x87ceeb, 0xd4a96a, 0.6)
+    // this.hemisphere = new THREE.HemisphereLight(0x87ceeb, 0xd4a96a, 0.05)
+    this.hemisphere = new HemisphereLight(0x87ceeb, 0xd4a96a, 0.05)
     scene.add(this.hemisphere)
     }
 }
