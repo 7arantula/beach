@@ -1,11 +1,16 @@
 import * as THREE from 'three/webgpu'
 import WebGPURenderer from 'three/src/renderers/webgpu/WebGPURenderer.js'
+import Orchestrator from '../core/Orchestrator.js'
 
 export default class Renderer {
-  constructor(canvasName, scene, camera) {
-    this.canvas = document.getElementById(canvasName)
-    this.scene = scene;
-    this.camera = camera;
+  constructor() {
+    
+    this.orchestrator = new Orchestrator()
+    this.canvas = document.getElementById(this.orchestrator.canvas)
+    this.scene = this.orchestrator.scene
+    this.camera = this.orchestrator.camera.instance
+
+    
 
     this.createInstance()
   }

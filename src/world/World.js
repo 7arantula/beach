@@ -2,10 +2,12 @@ import * as THREE from 'three/webgpu'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import MeshStandardNodeMaterial from 'three/src/materials/nodes/MeshStandardNodeMaterial.js'
+import Orchestrator from '../core/Orchestrator.js'
 
 export default class World {
   constructor(scene) {
-    this.scene = scene
+    this.orchestrator = new Orchestrator()
+    this.scene = this.orchestrator.scene
     this.clickables = []
     this.objects = {}
     this.onClickCallbacks = {}

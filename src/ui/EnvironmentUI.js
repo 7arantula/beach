@@ -1,6 +1,9 @@
+import Orchestrator from '../core/Orchestrator.js'
+
 export class EnvironmentUI {
   constructor(environment) {
-    this.environment = environment
+    this.orchestrator = new Orchestrator()
+    this.environment = this.orchestrator.environment
 
 this.states = {
   time: { index: 1, cycles: [

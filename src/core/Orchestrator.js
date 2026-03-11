@@ -14,13 +14,14 @@ export default class Orchestrator{
     if (instance) return instance 
     instance = this
 
+        this.canvas = 'bg'
         this.scene = new THREE.Scene()
         this.camera = new Camera();
-        this.renderer = new Renderer('bg', this.scene, this.camera.instance)
-        this.controls = this.camera.createControls(this.renderer.instance)
-        this.world = new World(this.scene)
-        this.environment = new Environment(this.scene, this.renderer.instance)
-        this.environmentUI = new EnvironmentUI(this.environment)
+        this.renderer = new Renderer()
+        this.controls = this.camera.createControls()
+        this.world = new World()
+        this.environment = new Environment()
+        this.environmentUI = new EnvironmentUI()
 
 
         window.addEventListener('resize', () => {
@@ -29,9 +30,6 @@ export default class Orchestrator{
         this.renderer.instance.setSize(window.innerWidth, window.innerHeight)
         this.renderer.instance.setPixelRatio(Math.min(window.devicePixelRatio, 2))
         })
-        
-
-
 
         // Time starts AFTER renderer is ready
         const time = new Time()

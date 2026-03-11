@@ -2,6 +2,7 @@ import * as THREE from 'three/webgpu'
 import { OrbitControls } from 'three/examples/jsm/Addons.js'
 import Time from '../utils/Time.js';
 import { angleDiff } from '../utils/Math.js'
+import Orchestrator from '../core/Orchestrator.js'
 
 // Isometric config — tweak these to adjust the view
 export const CAMERA_CONFIG = {
@@ -16,7 +17,7 @@ const originalAzimuth = 2.09;
 
 export default class Camera {
     constructor() {
-
+        this.orchestrator = new Orchestrator()
         this.createInstance()
     }
 
@@ -41,8 +42,9 @@ export default class Camera {
     )
     }
 
-    createControls(renderer){
-    this.controls = new OrbitControls(this.instance, renderer.domElement);
+    createControls(){
+    this.renderer = this.orchestrator.renderer.instance
+    this.controls = new OrbitControls(this.instance, this.renderer.domElement);
     this.controls.lookAt = CAMERA_CONFIG.target;
     this.controls.enableDamping = true
     this.controls.dampingFactor = 0.1
