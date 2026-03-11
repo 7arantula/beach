@@ -4,21 +4,21 @@ export class EnvironmentUI {
 
 this.states = {
   time: { index: 1, cycles: [
-    { value: 'dawn',   icon: '/src/assets/icons/time/dawn.svg',     tooltip: 'Dawn'     },
-    { value: 'day',    icon: '/src/assets/icons/time/day.svg',      tooltip: 'Day'      },
-    { value: 'sunset', icon: '/src/assets/icons/time/sunset.svg',   tooltip: 'Sunset'   },
-    { value: 'night',  icon: '/src/assets/icons/time/night.svg',    tooltip: 'Night'    },
+    { value: 'dawn',   icon: '/icons/time/dawn.svg',     tooltip: 'Dawn'     },
+    { value: 'day',    icon: '/icons/time/day.svg',      tooltip: 'Day'      },
+    { value: 'sunset', icon: '/icons/time/sunset.svg',   tooltip: 'Sunset'   },
+    { value: 'night',  icon: '/icons/time/night.svg',    tooltip: 'Night'    },
   ]},
   weather: { index: 0, cycles: [
-    { value: 'clear',    icon: '/src/assets/icons/weather/clear.svg',    tooltip: 'Clear'    },
-    { value: 'overcast', icon: '/src/assets/icons/weather/overcast.svg', tooltip: 'Overcast' },
-    { value: 'rain',     icon: '/src/assets/icons/weather/rain.svg',     tooltip: 'Rain'     },
-    { value: 'storm',    icon: '/src/assets/icons/weather/storm.svg',    tooltip: 'Storm'    },
+    { value: 'clear',    icon: 'icons/weather/clear.svg',    tooltip: 'Clear'    },
+    { value: 'overcast', icon: 'icons/weather/overcast.svg', tooltip: 'Overcast' },
+    { value: 'rain',     icon: 'icons/weather/rain.svg',     tooltip: 'Rain'     },
+    { value: 'storm',    icon: 'icons/weather/storm.svg',    tooltip: 'Storm'    },
   ]},
   ocean: { index: 0, cycles: [
-    { value: 'calm',   icon: '/src/assets/icons/ocean/calm.svg',   tooltip: 'Calm'   },
-    { value: 'choppy', icon: '/src/assets/icons/ocean/choppy.svg', tooltip: 'Choppy' },
-    { value: 'rough',  icon: '/src/assets/icons/ocean/rough.svg',  tooltip: 'Rough'  },
+    { value: 'calm',   icon: 'icons/ocean/calm.svg',   tooltip: 'Calm'   },
+    { value: 'choppy', icon: 'icons/ocean/choppy.svg', tooltip: 'Choppy' },
+    { value: 'rough',  icon: 'icons/ocean/rough.svg',  tooltip: 'Rough'  },
   ]},
 }
 

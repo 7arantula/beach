@@ -1,17 +1,19 @@
 import * as THREE from 'three/webgpu'
-// import { DirectionalLight } from 'three/src/lights/DirectionalLight.js'
+import { DirectionalLight } from 'three/src/lights/DirectionalLight.js'
 // import { AmbientLight } from 'three/src/lights/AmbientLight.js'
 // import { HemisphereLight } from 'three/src/lights/HemisphereLight.js'
+import Orchestrator from './Orchestrator.js'
 
 export default class Lights{
   constructor(scene){
-    this.scene = scene
+    this.orchestrator = new Orchestrator()
+    this.scene = this.orchestrator.scene
     this.createLights(this.scene)
   }
 
   createLights(scene){
-    this.sun = new THREE.DirectionalLight(0xfff4e0, 2)
-    //this.sun = new DirectionalLight(0xfff4e0, 2)
+    //this.sun = new THREE.DirectionalLight(0xfff4e0, 2)
+    this.sun = new DirectionalLight(0xfff4e0, 2)
     this.sun.position.set(10, 20, 10)
     this.sun.castShadow = true
     this.sun.shadow.mapSize.width = 2048

@@ -1,7 +1,7 @@
 import * as THREE from 'three/webgpu'
 import { OrbitControls } from 'three/examples/jsm/Addons.js'
 import Time from '../utils/Time.js';
-import { angleDiff } from '../utils/math.js'
+import { angleDiff } from '../utils/Math.js'
 
 // Isometric config — tweak these to adjust the view
 export const CAMERA_CONFIG = {

@@ -67,7 +67,7 @@ export default class Environment {
     this.scene = scene
 
     // Lights
-    this.lights = new Lights(this.scene)
+    this.lights = new Lights()
     console.log(2)
 
     this.currentTime    = 'day'
