@@ -75,7 +75,6 @@ export default class Environment {
     this.oceanUniforms  = null
     this._lightningTimer = 0
 
-    console.log('sun exists?', this.lights.sun)
     this._applyTimePreset('day', 0)
   }
 

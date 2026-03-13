@@ -5,7 +5,7 @@ import MeshStandardNodeMaterial from 'three/src/materials/nodes/MeshStandardNode
 import Orchestrator from '../core/Orchestrator.js'
 
 export default class World {
-  constructor(scene) {
+  constructor() {
     this.orchestrator = new Orchestrator()
     this.scene = this.orchestrator.scene
     this.clickables = []

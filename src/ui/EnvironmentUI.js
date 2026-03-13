@@ -1,7 +1,7 @@
 import Orchestrator from '../core/Orchestrator.js'
 
-export class EnvironmentUI {
-  constructor(environment) {
+export default class EnvironmentUI {
+  constructor() {
     this.orchestrator = new Orchestrator()
     this.environment = this.orchestrator.environment
 

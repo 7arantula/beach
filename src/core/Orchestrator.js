@@ -3,7 +3,7 @@ import Renderer from '../core/Renderer.js'
 import Camera from '../core/Camera.js'
 import Environment from '../world/Environment.js'
 import World from '../world/World.js'
-import { EnvironmentUI } from '../ui/EnvironmentUI.js'
+import EnvironmentUI from '../ui/EnvironmentUI.js'
 import Time from '../utils/Time.js'
 
 let instance = null
