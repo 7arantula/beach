@@ -1,125 +1,103 @@
-import * as THREE from 'three'
+// controllers/InputHandler.js — raycasting, hover detection, click dispatch
 
-export class InputHandler {
-  constructor(camera, domElement, world) {
-    this.camera = camera
-    this.domElement = domElement
-    this.world = world
+import * as THREE from 'three'
+import Orchestrator from '../core/Orchestrator.js'
+
+export default class InputHandler {
+  constructor() {
+    this.orchestrator = new Orchestrator()
+    this.camera = this.orchestrator.camera.instance
+    this.canvas = this.orchestrator.renderer.instance.domElement
 
     this.raycaster = new THREE.Raycaster()
-    this.mouse = new THREE.Vector2()
+    this.pointer = new THREE.Vector2()
 
-    this.isDragging = false
-    this.dragStartX = 0
-    this.dragStartY = 0
-    this.dragThreshold = 5  // pixels — below this it's a click not a drag
+    this._clickStart = new THREE.Vector2()
+    this._isDragging = false
+    this._dragThreshold = 5
+    this._hoveredObject = null
+    this._clickables = []
 
-    this._bindEvents()
+    // onSelect is overridden by World after instantiation
+    // World.js: this.inputHandler.onSelect = (object) => this.onSelect(object)
+    this.onSelect = null
 
-    // Set initial cursor
-    this.domElement.style.cursor = 'grab'
+    this.bindEvents()
   }
 
-  // ── Event Binding ───────────────────────────────────────────────
+  // ── Clickables ───────────────────────────────────────────────────
+  // Called by World each time a new GLB finishes loading
 
-  _bindEvents() {
-    // Mouse
-    this.domElement.addEventListener('mousedown', this._onMouseDown.bind(this))
-    this.domElement.addEventListener('mousemove', this._onMouseMove.bind(this))
-    this.domElement.addEventListener('mouseup', this._onMouseUp.bind(this))
-
-    // Touch
-    this.domElement.addEventListener('touchstart', this._onTouchStart.bind(this), { passive: true })
-    this.domElement.addEventListener('touchend', this._onTouchEnd.bind(this))
+  setClickables(objects) {
+    this._clickables = objects
   }
 
-  // ── Mouse Handlers ──────────────────────────────────────────────
+  // ── Events ───────────────────────────────────────────────────────
 
-  _onMouseDown(e) {
-    this.isDragging = false
-    this.dragStartX = e.clientX
-    this.dragStartY = e.clientY
+  bindEvents() {
+    this.canvas.addEventListener('pointermove', (e) => this.onPointerMove(e))
+    this.canvas.addEventListener('pointerdown', (e) => this.onPointerDown(e))
+    this.canvas.addEventListener('pointerup',   (e) => this.onPointerUp(e))
   }
 
-_onMouseMove(e) {
-  const dx = Math.abs(e.clientX - this.dragStartX)
-  const dy = Math.abs(e.clientY - this.dragStartY)
-  if (dx > this.dragThreshold || dy > this.dragThreshold) {
-    this.isDragging = true
+  onPointerDown(e) {
+    this._clickStart.set(e.clientX, e.clientY)
+    this._isDragging = false
   }
 
-  this._updateMouse(e.clientX, e.clientY)
-  const hit = this._raycast()
+  onPointerMove(e) {
+    this.pointer.x =  (e.clientX / window.innerWidth)  * 2 - 1
+    this.pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
 
-  let found = false
-  if (hit) {
-    let obj = hit.object
-    while (obj) {
-      if (obj.userData.clickable) { found = true; break }
-      obj = obj.parent
+    const dx = e.clientX - this._clickStart.x
+    const dy = e.clientY - this._clickStart.y
+    if (Math.sqrt(dx * dx + dy * dy) > this._dragThreshold) {
+      this._isDragging = true
     }
+
+    this.checkHover()
   }
 
-  this.domElement.style.cursor = found ? 'pointer' : 'grab'
-}
-
-  _onMouseUp(e) {
-    if (this.isDragging) return  // was a drag, not a click
-    this._handleClick(e.clientX, e.clientY)
+  onPointerUp(e) {
+    if (this._isDragging) return
+    this.checkClick()
   }
-
-  // ── Touch Handlers ──────────────────────────────────────────────
-
-  _onTouchStart(e) {
-    this.isDragging = false
-    this.dragStartX = e.touches[0].clientX
-    this.dragStartY = e.touches[0].clientY
-  }
-
-  _onTouchEnd(e) {
-    const touch = e.changedTouches[0]
-    const dx = Math.abs(touch.clientX - this.dragStartX)
-    const dy = Math.abs(touch.clientY - this.dragStartY)
-
-    if (dx < this.dragThreshold && dy < this.dragThreshold) {
-      this._handleClick(touch.clientX, touch.clientY)
-    }
-  }
-
-  // ── Core Click Logic ─────────────────────────────────────────────
-
-_handleClick(clientX, clientY) {
-  this._updateMouse(clientX, clientY)
-  const hit = this._raycast()
-  if (!hit) return
-
-  // Traverse up the parent chain to find the clickable root
-  let obj = hit.object
-  while (obj) {
-    if (obj.userData.clickable) break
-    obj = obj.parent
-  }
-
-  if (!obj || !obj.userData.clickable) return
-
-  const type = obj.userData.type
-  console.log(`Clicked: ${type}`)
-  this.world.onObjectClick(type, obj.position)
-}
 
   // ── Raycasting ───────────────────────────────────────────────────
 
-  _updateMouse(clientX, clientY) {
-    this.mouse.x = (clientX / window.innerWidth) * 2 - 1
-    this.mouse.y = -(clientY / window.innerHeight) * 2 + 1
+  getRaycastHit() {
+    if (this._clickables.length === 0) return null
+
+    this.raycaster.setFromCamera(this.pointer, this.camera)
+    const hits = this.raycaster.intersectObjects(this._clickables, true)
+    if (hits.length === 0) return null
+
+    // Walk up parent chain to find the root clickable object
+    // Needed because raycaster hits child meshes, not the root GLB group
+    let obj = hits[0].object
+    while (obj && !this._clickables.includes(obj)) {
+      obj = obj.parent
+    }
+    return obj || null
   }
 
-  _raycast() {
-    this.raycaster.setFromCamera(this.mouse, this.camera)
-    const clickables = this.world.getClickables()
-    if (!clickables || clickables.length === 0) return null
+  checkHover() {
+    const hit = this.getRaycastHit()
 
-    const intersects = this.raycaster.intersectObjects(clickables, true)
-    return intersects.length > 0 ? intersects[0] : null
+    if (hit && hit !== this._hoveredObject) {
+      this._hoveredObject = hit
+      this.canvas.style.cursor = 'pointer'
+    } else if (!hit && this._hoveredObject) {
+      this._hoveredObject = null
+      this.canvas.style.cursor = 'default'
+    }
+  }
+
+  checkClick() {
+    const hit = this.getRaycastHit()
+    if (!hit) return
+
+    // Dispatch to World.onSelect — World decides what happens next
+    if (this.onSelect) this.onSelect(hit)
   }
 }

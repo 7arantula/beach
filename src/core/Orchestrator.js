@@ -20,6 +20,7 @@ export default class Orchestrator{
         this.renderer = new Renderer()
         this.controls = this.camera.createControls()
         this.world = new World()
+       
         this.environment = new Environment()
         this.environmentUI = new EnvironmentUI()
 
