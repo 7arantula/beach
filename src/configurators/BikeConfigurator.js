@@ -6,9 +6,10 @@ import Orchestrator from '../core/Orchestrator.js'
 // ── Configurator camera + fog config ─────────────────────────────
 // Camera.applyConfig() reads this when configurator opens
 export const BIKE_CAMERA_CONFIG = {
-  cameraPosition: new THREE.Vector3(8, 4, 8),
+  cameraPosition: new THREE.Vector3(0, 0, -10),
   cameraTarget:   new THREE.Vector3(0, 1, 0),
   swoopDuration:  2.0,
+  dampingFactor:  0.02,
 }
 
 export const BIKE_FOG_CONFIG = {

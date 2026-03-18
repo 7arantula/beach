@@ -88,6 +88,7 @@ export default class World {
       const model = gltf.scene
       this.convertMaterials(model)
       this.scene.add(model)
+      this.objects['island'] = model
       console.log('Island loaded!')
     }, undefined, (error) => console.error('Island load error:', error))
   }
@@ -154,20 +155,20 @@ export default class World {
     const worldPos = new THREE.Vector3()
     object.getWorldPosition(worldPos)
     this.orchestrator.camera.cameraSwoop(worldPos, () => {
-    if (type === 'bike') this.bikeConfigurator.open()
+    if (type === 'bike') this.orchestrator.bikeConfigurator.open()
     })
   }
 
 
   hideWorld() {
-  Object.values(this.objects).forEach(obj => obj.visible = false)
-  this.clickables.forEach(obj => obj.visible = false)
-}
+    Object.values(this.objects).forEach(obj => obj.visible = false)
+    this.clickables.forEach(obj => obj.visible = false)
+  }
 
-showWorld() {
-  Object.values(this.objects).forEach(obj => obj.visible = true)
-  this.clickables.forEach(obj => obj.visible = true)
-}
+  showWorld() {
+    Object.values(this.objects).forEach(obj => obj.visible = true)
+    this.clickables.forEach(obj => obj.visible = true)
+  }
 
   // ── FUTURE: Configurator loader ───────────────────────────────────
   // Called after camera finishes swooping to the object

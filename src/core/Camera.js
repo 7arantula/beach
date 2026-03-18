@@ -58,7 +58,11 @@ export default class Camera {
     this.controls.minAzimuthAngle  = 0.2
     this.controls.update()
 
-    this.controls.addEventListener('end', () => this.springBack())
+    this.controls.addEventListener('end', () => {
+      if (!this.orchestrator.bikeConfigurator._isOpen) {
+        this.springBack()
+      }
+    })
   }
 
   update() {
@@ -116,6 +120,7 @@ export default class Camera {
     this._swoopTimer      = 0
     this._swoopOnComplete = onComplete
     this.isSwooping       = true
+    this.controls.dampingFactor = (config.dampingFactor)
   }
 
   // ── Return to world view ─────────────────────────────────────────
