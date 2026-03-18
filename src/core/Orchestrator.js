@@ -15,6 +15,7 @@ export default class Orchestrator {
     if (instance) return instance
     instance = this
 
+    this.configuratorOpen = false
     this.canvas = 'bg'
     this.scene = new THREE.Scene()
     this.camera = new Camera()

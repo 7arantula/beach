@@ -59,7 +59,7 @@ export default class Camera {
     this.controls.update()
 
     this.controls.addEventListener('end', () => {
-      if (!this.orchestrator.bikeConfigurator._isOpen) {
+      if (!this.orchestrator.configuratorOpen) {
         this.springBack()
       }
     })
@@ -136,5 +136,6 @@ export default class Camera {
     this._swoopTimer      = 0
     this._swoopOnComplete = onComplete
     this.isSwooping       = true
+    this.controls.dampingFactor = 0.1
   }
 }

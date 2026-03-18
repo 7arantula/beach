@@ -135,6 +135,43 @@
   transform: translateY(0);
 }
 
+
+/* ── Back Button ────────────────────────────────────────────────── */
+#configurator-back {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 101;
+  padding: 10px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+  font-size: 13px;
+  font-family: system-ui, sans-serif;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+#configurator-back:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: scale(1.05);
+}
+
+#configurator-back:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  #configurator-back {
+    top: 16px;
+    left: 16px;
+  }
+}
+
 @media (min-width: 769px) {
   #configurator {
     top: 0;

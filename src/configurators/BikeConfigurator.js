@@ -83,41 +83,38 @@ export default class BikeConfigurator {
   // 3. Show UI when camera arrives
 
   open() {
-    if (this._isOpen) return
-    this._isOpen = true
-
-    // Hide world
+    this.orchestrator.configuratorOpen = true
     this.orchestrator.world.hideWorld()
-
-    // Show parts
     Object.values(this.parts).forEach(part => part.visible = true)
 
-    // Zoom camera in to bike position, show UI when done
-    this.orchestrator.camera.applyConfig(BIKE_CAMERA_CONFIG, () => {
-      // TODO: open BikeConfiguratorUI
-      console.log('bike configurator UI ready')
-    })
+    // Back button
+    this._backBtn = document.createElement('button')
+    this._backBtn.textContent = '← Back'
+    this._backBtn.id = 'configurator-back'
+    this._backBtn.addEventListener('click', () => this.close())
+    document.body.appendChild(this._backBtn)
 
-    // Apply fog config
-    // TODO: this.orchestrator.environment.setFog(BIKE_FOG_CONFIG)
+    this.orchestrator.camera.applyConfig(BIKE_CAMERA_CONFIG, () => {
+      const panel = document.getElementById('configurator')
+      if (panel) panel.classList.add('open')
+    })
   }
 
-  // ── Close ─────────────────────────────────────────────────────────
-  // Called when user hits back/close button
-  // 1. Hide parts + UI
-  // 2. Return camera to world
-  // 3. Show world again
-
   close() {
-    if (!this._isOpen) return
-    this._isOpen = false
-
+    this.orchestrator.configuratorOpen = false
     Object.values(this.parts).forEach(part => part.visible = false)
-    // TODO: close BikeConfiguratorUI
+    
+    if (this._backBtn) {
+      this._backBtn.remove()
+      this._backBtn = null
+    }
 
     this.orchestrator.camera.returnToWorld(() => {
       this.orchestrator.world.showWorld()
     })
+
+    const panel = document.getElementById('configurator')
+    if (panel) panel.classList.remove('open')
   }
 
   // ── Part swaps ────────────────────────────────────────────────────
