@@ -5,17 +5,19 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import MeshStandardNodeMaterial from 'three/src/materials/nodes/MeshStandardNodeMaterial.js'
 import InputHandler from '../controllers/InputHandler.js'
 import Orchestrator from '../core/Orchestrator.js'
+import BikeConfigurator from '../configurators/BikeConfigurator.js'
 
 export default class World {
   constructor() {
     this.orchestrator = new Orchestrator()
     this.scene = this.orchestrator.scene
+     
     this.clickables = []
     this.objects = {}
 
     this.anchors = {
       hut:   new THREE.Vector3(0, 0, 0),
-      bike:  new THREE.Vector3(-4, 0, 2),
+      bike:  new THREE.Vector3(0, 0, 0),
       truck: new THREE.Vector3(4, 0, 2),
       boat:  new THREE.Vector3(0, 0, -6),
     }
@@ -29,6 +31,7 @@ export default class World {
     // Future: camera.focusOn(object) + open configurator UI
     this.inputHandler = new InputHandler()
     this.inputHandler.onSelect = (object) => this.onSelect(object)
+    // this.bikeConfigurator = new BikeConfigurator()
   }
 
   // ── Loaders ──────────────────────────────────────────────────────
@@ -111,7 +114,7 @@ export default class World {
   loadClickables() {
     const clickables = [
       { type: 'hut',   path: '/models/clickable/hut/hut_lo.glb'    },
-      // { type: 'bike',  path: '/models/clickable/bike/bike_lo.glb'   },
+      { type: 'bike',  path: '/models/clickable/bike/bike_lo.glb'   },
       // { type: 'truck', path: '/models/clickable/truck/truck_lo.glb' },
       // { type: 'boat',  path: '/models/clickable/boat/boat_lo.glb'   },
     ]
@@ -151,9 +154,20 @@ export default class World {
     const worldPos = new THREE.Vector3()
     object.getWorldPosition(worldPos)
     this.orchestrator.camera.cameraSwoop(worldPos, () => {
-    console.log(`swoop complete — ready to open ${type} configurator`)
+    if (type === 'bike') this.bikeConfigurator.open()
     })
   }
+
+
+  hideWorld() {
+  Object.values(this.objects).forEach(obj => obj.visible = false)
+  this.clickables.forEach(obj => obj.visible = false)
+}
+
+showWorld() {
+  Object.values(this.objects).forEach(obj => obj.visible = true)
+  this.clickables.forEach(obj => obj.visible = true)
+}
 
   // ── FUTURE: Configurator loader ───────────────────────────────────
   // Called after camera finishes swooping to the object
