@@ -5,7 +5,6 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import MeshStandardNodeMaterial from 'three/src/materials/nodes/MeshStandardNodeMaterial.js'
 import InputHandler from '../controllers/InputHandler.js'
 import Orchestrator from '../core/Orchestrator.js'
-import BikeConfigurator from '../configurators/BikeConfigurator.js'
 
 export default class World {
   constructor() {

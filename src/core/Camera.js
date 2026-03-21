@@ -18,10 +18,10 @@ const originalAzimuth = 2.09
 
 export default class Camera {
   constructor() {
-    this.orchestrator  = new Orchestrator()
-    this.isSwooping    = false
-    this._swoopTimer   = 0
-    this._swoopFinal   = new THREE.Vector3()
+    this.orchestrator       = new Orchestrator()
+    this.isSwooping         = false
+    this._swoopTimer        = 0
+    this._swoopFinal        = new THREE.Vector3()
     this._swoopCameraTarget = new THREE.Vector3()
     this._swoopOnComplete   = null
     this.createInstance()
@@ -48,14 +48,14 @@ export default class Camera {
   createControls() {
     this.renderer = this.orchestrator.renderer.instance
     this.controls = new OrbitControls(this.instance, this.renderer.domElement)
-    this.controls.enableDamping    = true
-    this.controls.dampingFactor    = 0.1
-    this.controls.enablePan        = false
-    this.controls.enableZoom       = false
-    this.controls.minPolarAngle    = Math.PI / 2 - 0.35
-    this.controls.maxPolarAngle    = Math.PI / 2 - 0.35
-    this.controls.maxAzimuthAngle  = -2
-    this.controls.minAzimuthAngle  = 0.2
+    this.controls.enableDamping   = true
+    this.controls.dampingFactor   = 0.1
+    this.controls.enablePan       = false
+    this.controls.enableZoom      = false
+    this.controls.minPolarAngle   = Math.PI / 2 - 0.35
+    this.controls.maxPolarAngle   = Math.PI / 2 - 0.35
+    this.controls.maxAzimuthAngle = -2
+    this.controls.minAzimuthAngle = 0.2
     this.controls.update()
 
     this.controls.addEventListener('end', () => {
@@ -76,12 +76,14 @@ export default class Camera {
       this.controls.target.lerp(this._swoopCameraTarget, 0.02)
 
       if (this._swoopTimer > CAMERA_CONFIG.swoopDuration) {
-        this.isSwooping = false
-        this.controls.enabled = true
-        if (this._swoopOnComplete) {
-          this._swoopOnComplete()
-          this._swoopOnComplete = null
-        }
+        // Clear state BEFORE firing callback
+        // so any new swoop started inside callback gets clean state
+        this.isSwooping         = false
+        this.controls.enabled   = true
+        const callback          = this._swoopOnComplete
+        this._swoopOnComplete   = null
+
+        if (callback) callback()
       }
     }
 
@@ -94,9 +96,7 @@ export default class Camera {
     this.controls.rotateLeft(diff)
   }
 
-  // ── Zoom out toward a point, fire onComplete when done ───────────
-  // Called by World.onSelect when user clicks a clickable object
-  // onComplete: hide world, open configurator, call applyConfig
+  // ── Zoom out — called by World.onSelect on click ─────────────────
 
   cameraSwoop(targetPosition, onComplete) {
     this._swoopCameraTarget.copy(targetPosition)
@@ -110,9 +110,7 @@ export default class Camera {
     this.isSwooping       = true
   }
 
-  // ── Zoom in to configurator position, fire onComplete when done ──
-  // Called by each configurator's open() with its own CONFIG
-  // onComplete: show configurator UI
+  // ── Zoom in — called by configurator open() ──────────────────────
 
   applyConfig(config, onComplete) {
     this._swoopFinal.copy(config.cameraPosition)
@@ -120,11 +118,10 @@ export default class Camera {
     this._swoopTimer      = 0
     this._swoopOnComplete = onComplete
     this.isSwooping       = true
-    this.controls.dampingFactor = (config.dampingFactor)
+    if (config.dampingFactor) this.controls.dampingFactor = config.dampingFactor
   }
 
-  // ── Return to world view ─────────────────────────────────────────
-  // Called by configurator close()
+  // ── Return to world — called by configurator close() ────────────
 
   returnToWorld(onComplete) {
     this._swoopFinal.set(

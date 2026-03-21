@@ -6,6 +6,7 @@ import World from '../world/World.js'
 import EnvironmentUI from '../ui/EnvironmentUI.js'
 import Time from '../utils/Time.js'
 import BikeConfigurator from '../configurators/BikeConfigurator.js'
+import ConfiguratorUI from '../ui/ConfiguratorUI.js'
 
 let instance = null
 
@@ -24,7 +25,8 @@ export default class Orchestrator {
     this.world = new World()
     this.environment = new Environment()
     this.environmentUI = new EnvironmentUI()
-
+    this.configuratorUI = new ConfiguratorUI()
+    this.activeConfigurator = null
     // Configurators after everything else is ready
     this.bikeConfigurator = new BikeConfigurator()
 
