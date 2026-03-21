@@ -72,16 +72,21 @@ export default class InputHandler {
     const hits = this.raycaster.intersectObjects(this._clickables, true)
     if (hits.length === 0) return null
 
-    // Walk up parent chain to find the root clickable object
-    // Needed because raycaster hits child meshes, not the root GLB group
     let obj = hits[0].object
     while (obj && !this._clickables.includes(obj)) {
       obj = obj.parent
     }
-    return obj || null
-  }
 
+    if (!obj || !obj.visible) return null
+    return obj
+  }
+  
   checkHover() {
+
+    if (this.orchestrator.configuratorOpen) {
+      this.canvas.style.cursor = 'default'
+    return
+  }
     const hit = this.getRaycastHit()
 
     if (hit && hit !== this._hoveredObject) {
@@ -94,10 +99,9 @@ export default class InputHandler {
   }
 
   checkClick() {
+    if (this.orchestrator.configuratorOpen) return
     const hit = this.getRaycastHit()
     if (!hit) return
-
-    // Dispatch to World.onSelect — World decides what happens next
     if (this.onSelect) this.onSelect(hit)
   }
 }

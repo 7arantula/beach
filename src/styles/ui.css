@@ -1,32 +1,54 @@
-/* styles/ui.css — shared UI styles for env controls + configurators */
+/* ═══════════════════════════════════════════════════════════════════
+   ui.css — shared UI styles
+   Sections:
+   1. Reset
+   2. Shared tokens
+   3. Environment controls
+   4. Configurator panel
+   5. Configurator back button
+   6. Configurator content widgets
+   7. Mobile overrides
+═══════════════════════════════════════════════════════════════════ */
 
-/* ── Fonts ──────────────────────────────────────────────────────── */
+
+/* ── 1. Reset ───────────────────────────────────────────────────── */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* ── Frosted Glass Base ─────────────────────────────────────────── */
+
+/* ── 2. Shared tokens ───────────────────────────────────────────── */
+/* Reusable values — change here to update everywhere */
+
+:root {
+  --glass-bg: rgba(100, 100, 100, 0.1);
+  --glass-border:     rgba(255, 255, 255, 0.15);
+  --glass-hover-bg:   rgba(255, 255, 255, 0.16);
+  --glass-hover-border: rgba(255, 255, 255, 0.3);
+  --glass-blur:       blur(12px);
+  --glass-radius:     14px;
+  --text-primary:     #fff;
+  --text-muted:       rgba(255, 255, 255, 0.5);
+  --font:             system-ui, sans-serif;
+  --transition-fast:  0.15s ease;
+  --transition-med:   0.2s ease;
+}
+
+/* Frosted glass mixin — apply to any element */
 .glass {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
-}
-
-.env-icon {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);  /* makes any icon white */
-  transition: opacity 0.15s ease;
+  background:         var(--glass-bg);
+  backdrop-filter:    var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border:             1px solid var(--glass-border);
+  border-radius:      var(--glass-radius);
 }
 
 
+/* ── 3. Environment controls ────────────────────────────────────── */
+/* Top-right cycling buttons for time / weather / ocean */
 
-/* ── Environment Controls ───────────────────────────────────────── */
 #env-controls {
   position: fixed;
   top: 24px;
@@ -37,29 +59,27 @@
   gap: 8px;
 }
 
-/* ── Cycle Button ───────────────────────────────────────────────── */
 .env-btn {
   width: 48px;
   height: 48px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--glass-radius);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+  transition: background var(--transition-med), transform var(--transition-fast), border-color var(--transition-med);
   outline: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
 .env-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: var(--glass-hover-bg);
+  border-color: var(--glass-hover-border);
   transform: scale(1.05);
 }
 
@@ -67,35 +87,212 @@
   transform: scale(0.95);
 }
 
+/* Disabled during transition */
 .env-btn.transitioning {
   pointer-events: none;
   opacity: 0.6;
 }
 
-/* ── Tooltip ────────────────────────────────────────────────────── */
+/* SVG icon inside env button */
+.env-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  transition: opacity var(--transition-fast);
+}
+
+/* Tooltip — appears to the left of button on hover */
 .env-btn::before {
   content: attr(data-tooltip);
   position: absolute;
   right: 58px;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
-  color: #fff;
+  color: var(--text-primary);
   font-size: 11px;
-  font-family: system-ui, sans-serif;
+  font-family: var(--font);
   letter-spacing: 0.05em;
   padding: 4px 10px;
   border-radius: 8px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--transition-med);
 }
 
 .env-btn:hover::before {
   opacity: 1;
 }
 
-/* ── Mobile ─────────────────────────────────────────────────────── */
+
+/* ── 4. Configurator panel ──────────────────────────────────────── */
+/* Slides up from bottom on mobile, in from right on desktop        */
+/* Populated by ConfiguratorUI.js — content varies per configurator */
+
+#configurator {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 24px;
+  border-radius: 24px 24px 0 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--glass-border);
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#configurator.open {
+  transform: translateY(0);
+}
+
+
+/* ── 5. Configurator back button ────────────────────────────────── */
+/* Top-left — created by ConfiguratorUI.js, hidden when no configurator open */
+
+#configurator-back {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 101;
+  padding: 10px 18px;
+  border-radius: var(--glass-radius);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: var(--font);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background var(--transition-med), transform var(--transition-fast);
+}
+
+#configurator-back:hover {
+  background: var(--glass-hover-bg);
+  transform: scale(1.05);
+}
+
+#configurator-back:active {
+  transform: scale(0.95);
+}
+
+
+/* ── 6. Configurator content widgets ────────────────────────────── */
+/* Built dynamically by ConfiguratorUI.js                           */
+/* Supports: cycle (← label →), toggle (on/off), color (swatches)  */
+
+/* Section title e.g. "Bike" */
+.config-title {
+  color: var(--text-primary);
+  font-size: 16px;
+  font-family: var(--font);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 20px;
+}
+
+/* Section wrapper e.g. "Headlight", "Color" */
+.config-section {
+  margin-bottom: 20px;
+}
+
+/* Section label above widget */
+.config-label {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-family: var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* Cycle widget — ‹ Round › */
+.config-cycle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.config-cycle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-med);
+}
+
+.config-cycle-btn:hover {
+  background: var(--glass-hover-bg);
+}
+
+.config-cycle-label {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: var(--font);
+  flex: 1;
+  text-align: center;
+}
+
+/* Toggle widget — Off / On */
+.config-toggle-btn {
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all var(--transition-med);
+}
+
+.config-toggle-btn.active {
+  background: var(--glass-hover-bg);
+  color: var(--text-primary);
+  border-color: var(--glass-hover-border);
+}
+
+/* Color swatch widget — row of circles */
+.config-colors {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.config-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.config-swatch:hover {
+  transform: scale(1.1);
+}
+
+.config-swatch.active {
+  border-color: var(--text-primary);
+  transform: scale(1.15);
+}
+
+
+/* ── 7. Mobile overrides ────────────────────────────────────────── */
+
 @media (max-width: 768px) {
   #env-controls {
     top: 16px;
@@ -109,69 +306,18 @@
     font-size: 18px;
   }
 
+  /* Hide tooltip on mobile — no hover */
   .env-btn::before {
     display: none;
   }
-}
 
-/* ── Configurator Panel (shared, used later) ────────────────────── */
-#configurator {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  padding: 24px;
-  border-radius: 24px 24px 0 0;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  transform: translateY(100%);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-#configurator.open {
-  transform: translateY(0);
-}
-
-
-/* ── Back Button ────────────────────────────────────────────────── */
-#configurator-back {
-  position: fixed;
-  top: 24px;
-  left: 24px;
-  z-index: 101;
-  padding: 10px 18px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: #fff;
-  font-size: 13px;
-  font-family: system-ui, sans-serif;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease;
-}
-
-#configurator-back:hover {
-  background: rgba(255, 255, 255, 0.16);
-  transform: scale(1.05);
-}
-
-#configurator-back:active {
-  transform: scale(0.95);
-}
-
-@media (max-width: 768px) {
   #configurator-back {
     top: 16px;
     left: 16px;
   }
 }
 
+/* Desktop — configurator slides in from right instead of bottom */
 @media (min-width: 769px) {
   #configurator {
     top: 0;
@@ -181,7 +327,7 @@
     width: 320px;
     border-radius: 0;
     border-top: none;
-    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    border-left: 1px solid var(--glass-border);
     transform: translateX(100%);
   }
 
@@ -189,106 +335,3 @@
     transform: translateX(0);
   }
 }
-
-
-/* ── Configurator Panel Content ─────────────────────────────────── */
-.config-title {
-  color: #fff;
-  font-size: 16px;
-  font-family: system-ui, sans-serif;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  margin-bottom: 20px;
-}
-
-.config-section {
-  margin-bottom: 20px;
-}
-
-.config-label {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 11px;
-  font-family: system-ui, sans-serif;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-/* Cycle widget */
-.config-cycle {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.config-cycle-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease;
-}
-
-.config-cycle-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-}
-
-.config-cycle-label {
-  color: #fff;
-  font-size: 13px;
-  font-family: system-ui, sans-serif;
-  flex: 1;
-  text-align: center;
-}
-
-/* Toggle widget */
-.config-toggle-btn {
-  padding: 8px 20px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 12px;
-  font-family: system-ui, sans-serif;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.config-toggle-btn.active {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
-/* Color swatches */
-.config-colors {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.config-swatch {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: transform 0.15s ease, border-color 0.15s ease;
-}
-
-.config-swatch:hover {
-  transform: scale(1.1);
-}
-
-.config-swatch.active {
-  border-color: #fff;
-  transform: scale(1.15);
-}
-
