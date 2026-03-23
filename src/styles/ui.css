@@ -87,7 +87,7 @@
   transform: scale(0.95);
 }
 
-/* Disabled during transition */
+
 .env-btn.transitioning {
   pointer-events: none;
   opacity: 0.6;
