@@ -13,15 +13,15 @@ this.states = {
     { value: 'night',  icon: '/icons/time/night.svg',    tooltip: 'Night'    },
   ]},
   weather: { index: 0, cycles: [
-    { value: 'clear',    icon: 'icons/weather/clear.svg',    tooltip: 'Clear'    },
-    { value: 'overcast', icon: 'icons/weather/overcast.svg', tooltip: 'Overcast' },
-    { value: 'rain',     icon: 'icons/weather/rain.svg',     tooltip: 'Rain'     },
-    { value: 'storm',    icon: 'icons/weather/storm.svg',    tooltip: 'Storm'    },
+    { value: 'clear',    icon: '/icons/weather/clear.svg',    tooltip: 'Clear'    },
+    { value: 'overcast', icon: '/icons/weather/overcast.svg', tooltip: 'Overcast' },
+    { value: 'rain',     icon: '/icons/weather/rain.svg',     tooltip: 'Rain'     },
+    { value: 'storm',    icon: '/icons/weather/storm.svg',    tooltip: 'Storm'    },
   ]},
   ocean: { index: 0, cycles: [
-    { value: 'calm',   icon: 'icons/ocean/calm.svg',   tooltip: 'Calm'   },
-    { value: 'choppy', icon: 'icons/ocean/choppy.svg', tooltip: 'Choppy' },
-    { value: 'rough',  icon: 'icons/ocean/rough.svg',  tooltip: 'Rough'  },
+    { value: 'calm',   icon: '/icons/ocean/calm.svg',   tooltip: 'Calm'   },
+    { value: 'choppy', icon: '/icons/ocean/choppy.svg', tooltip: 'Choppy' },
+    { value: 'rough',  icon: '/icons/ocean/rough.svg',  tooltip: 'Rough'  },
   ]},
 }
 
@@ -31,11 +31,11 @@ this.states = {
   // ── Build DOM ────────────────────────────────────────────────────
 
   _buildUI() {
-    // Import shared styles
-    const link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = '/src/styles/ui.css'
-    document.head.appendChild(link)
+    // // Import shared styles
+    // const link = document.createElement('link')
+    // link.rel = 'stylesheet'
+    // link.href = '/src/styles/ui.css'
+    // document.head.appendChild(link)
 
 
     // Container
@@ -69,6 +69,28 @@ this.states = {
 
       container.appendChild(btn)
       this.buttons[key] = btn
+    })
+  }
+
+  // EnvironmentUI.js
+  resetUI() {
+    const current = {
+      time:    this.environment.currentTime,
+      weather: this.environment.currentWeather,
+      ocean:   this.environment.currentOcean,
+    }
+
+    Object.entries(current).forEach(([key, value]) => {
+      const index = this.states[key].cycles.findIndex(c => c.value === value)
+      if (index === -1) return
+      this.states[key].index = index
+      const state = this.states[key].cycles[index]
+      const btn = this.buttons[key]
+      const img = btn.querySelector('.env-icon')
+      img.src = state.icon
+      img.alt = state.tooltip
+      btn.setAttribute('data-tooltip', state.tooltip)
+      btn.setAttribute('aria-label', state.tooltip)
     })
   }
 

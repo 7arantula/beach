@@ -29,6 +29,12 @@ export default class ConfiguratorUI {
   // ── Open with config from any configurator ───────────────────────
 
   open(config) {
+
+    this.orchestrator.environment.setTime('day', 1.0)
+    this.orchestrator.environment.setWeather('clear', 1.0)
+
+    const envControls = document.getElementById('env-controls')
+    if (envControls) envControls.style.display = 'none'
     console.log('ConfiguratorUI open called', config)
     this.panel.innerHTML = ''
 
@@ -66,6 +72,9 @@ export default class ConfiguratorUI {
   // ── Close ────────────────────────────────────────────────────────
 
   close() {
+    this.orchestrator.environmentUI.resetUI()
+    const envControls = document.getElementById('env-controls')
+    if (envControls) envControls.style.display = 'flex'
     this.panel.classList.remove('open')
     this.backBtn.style.display = 'none'
     setTimeout(() => {
