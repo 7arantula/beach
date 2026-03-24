@@ -119,6 +119,8 @@ export default class Camera {
     this._swoopOnComplete = onComplete
     this.isSwooping       = true
     if (config.dampingFactor) this.controls.dampingFactor = config.dampingFactor
+    this.controls.maxAzimuthAngle = Infinity
+    this.controls.minAzimuthAngle = -Infinity
   }
 
   // ── Return to world — called by configurator close() ────────────
@@ -134,5 +136,7 @@ export default class Camera {
     this._swoopOnComplete = onComplete
     this.isSwooping       = true
     this.controls.dampingFactor = 0.1
+    this.controls.maxAzimuthAngle = -2
+    this.controls.minAzimuthAngle = 0.2
   }
 }

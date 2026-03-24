@@ -7,6 +7,7 @@ export const BIKE_CAMERA_CONFIG = {
   cameraTarget:   new THREE.Vector3(0, 1, 0),
   swoopDuration:  2.0,
   dampingFactor: 0.02,
+  
 }
 
 export const BIKE_FOG_CONFIG = {
@@ -117,9 +118,14 @@ export default class BikeConfigurator {
     this.orchestrator.activeConfigurator = this
 
     // Wire callbacks now that this exists
-    BIKE_UI_CONFIG.sections[0].onChange = (index) => this.setHeadlight(index)
-    BIKE_UI_CONFIG.sections[1].onChange = (active) => this.toggleExhaust(active)
-    BIKE_UI_CONFIG.sections[2].onChange = (index, color) => this.setColor(color)
+    BIKE_UI_CONFIG.sections[0].onChange = (i) => this.setHeadlight(i)
+    BIKE_UI_CONFIG.sections[1].onChange = (i) => this.setVariant('wheels', i)
+    BIKE_UI_CONFIG.sections[2].onChange = (i) => this.setVariant('mirrors', i)
+    BIKE_UI_CONFIG.sections[3].onChange = (i) => this.setVariant('seat', i)
+    BIKE_UI_CONFIG.sections[4].onChange = (a) => this.setToggle('Exhaust', a)
+    BIKE_UI_CONFIG.sections[5].onChange = (a) => this.setToggle('saddlebag', a)
+    BIKE_UI_CONFIG.sections[6].onChange = (a) => this.setToggle('windshield', a)
+    BIKE_UI_CONFIG.sections[7].onChange = (i, color) => this.setColor(color)
 
     this.orchestrator.world.hideWorld()
     Object.values(this.parts).forEach(part => part.visible = true)
@@ -157,9 +163,16 @@ export default class BikeConfigurator {
     this.parts.headlight.geometry = variant.geometry()
   }
 
-  toggleExhaust(active) {
-    // TODO: show/hide exhaust part
-    console.log('exhaust:', active)
+  setToggle(key, active) {
+    console.log(key+"  "+active)
+  // const mesh = this.toggleMeshes[key]
+  // if (mesh) mesh.visible = active
+  }
+
+  setVariant(key, index) {
+    const variants = this.variantMeshes[key]
+    if (!variants) return
+    variants.forEach((v, i) => v.visible = i === index)
   }
 
   setColor(color) {
