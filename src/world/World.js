@@ -1,4 +1,3 @@
-// world/World.js
 import * as THREE from 'three/webgpu'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
@@ -33,16 +32,12 @@ export default class World {
     // this.bikeConfigurator = new BikeConfigurator()
   }
 
-  // ── Loaders ──────────────────────────────────────────────────────
-
   setupLoaders() {
     const draco = new DRACOLoader()
     draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
     this.loader = new GLTFLoader()
     this.loader.setDRACOLoader(draco)
   }
-
-  // ── Material Conversion ──────────────────────────────────────────
 
   convertMaterials(model) {
     model.traverse((child) => {
@@ -73,8 +68,6 @@ export default class World {
       child.material = newMat
     })
   }
-
-  // ── Scene Load ───────────────────────────────────────────────────
 
   loadScene() {
     this.loadStatic()
@@ -168,21 +161,4 @@ export default class World {
     Object.values(this.objects).forEach(obj => obj.visible = true)
     this.clickables.forEach(obj => obj.visible = true)
   }
-
-  // ── FUTURE: Configurator loader ───────────────────────────────────
-  // Called after camera finishes swooping to the object
-  // Swaps lo model for mid model, opens configurator UI panel
-
-  // openConfigurator(type) {
-  //   this.loader.load(`/models/clickable/${type}/${type}_mid.glb`, (gltf) => {
-  //     const model = gltf.scene
-  //     this.convertMaterials(model)
-  //     model.position.copy(this.anchors[type])
-  //     this.scene.add(model)
-  //     this.objects[`${type}_mid`] = model
-  //     // remove lo model
-  //     this.scene.remove(this.objects[type])
-  //     // open UI panel — BikeConfigurator / TruckConfigurator etc
-  //   })
-  // }
 }

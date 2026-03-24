@@ -31,14 +31,7 @@ this.states = {
   // ── Build DOM ────────────────────────────────────────────────────
 
   _buildUI() {
-    // // Import shared styles
-    // const link = document.createElement('link')
-    // link.rel = 'stylesheet'
-    // link.href = '/src/styles/ui.css'
-    // document.head.appendChild(link)
 
-
-    // Container
     const container = document.createElement('div')
     container.id = 'env-controls'
     document.body.appendChild(container)
