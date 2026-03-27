@@ -1,4 +1,5 @@
 import * as THREE from 'three/webgpu'
+// import * as THREE from 'three'
 import { gsap } from 'gsap'
 import Lights from '../core/Lights.js'
 import Orchestrator from '../core/Orchestrator.js'
@@ -48,6 +49,9 @@ const TIME_PRESETS = {
     fogNear:          25,
     fogFar:           75,
   },
+
+
+
 }
 const WEATHER_PRESETS = {
   clear:    { ambientMultiplier: 1.0,  sunMultiplier: 1.0  },
@@ -65,6 +69,11 @@ export default class Environment {
     constructor() {
     this.orchestrator = new Orchestrator()
     this.scene = this.orchestrator.scene
+    //const loader = new Three.ObjectLoader()
+    //this.obj = this.loader.load('public/data/static.json')
+    //this.scene.add(object)
+    //console.log("Json data "+obj)
+
 
     // Lights
     this.lights = new Lights()
