@@ -1,78 +1,14 @@
 import * as THREE from 'three/webgpu'
-// import * as THREE from 'three'
 import { gsap } from 'gsap'
 import Lights from '../core/Lights.js'
 import Orchestrator from '../core/Orchestrator.js'
+import { TIME_PRESETS, WEATHER_PRESETS, OCEAN_PRESETS } from '../data/Data.js'
 
-const TIME_PRESETS = {
-  dawn: {
-    sunColor:         0xffb347,
-    sunIntensity:     1.0,
-    sunPosition:      new THREE.Vector3(5, 5, 10),
-    ambientColor:     0xffd0a0,
-    ambientIntensity: 0.3,
-    skyColor:         0xff7043,
-    fogColor:         0xff7043,
-    fogNear:          30,
-    fogFar:           90,
-  },
-  day: {
-    sunColor:         0xfff4e0,
-    sunIntensity:     2,
-    sunPosition:      new THREE.Vector3(10, 20, 10),
-    ambientColor:     0xfff4e0,
-    ambientIntensity: 0.5,
-    skyColor:         0x87ceeb,
-    fogColor:         0x87ceeb,
-    fogNear:          40,
-    fogFar:           100,
-  },
-  sunset: {
-    sunColor:         0xff4500,
-    sunIntensity:     1.5,
-    sunPosition:      new THREE.Vector3(20, 4, 5),
-    ambientColor:     0xff6030,
-    ambientIntensity: 0.4,
-    skyColor:         0xff6030,
-    fogColor:         0xff6030,
-    fogNear:          25,
-    fogFar:           90,
-  },
-  night: {
-    sunColor:         0x1a1a2e,
-    sunIntensity:     -1,
-    sunPosition:      new THREE.Vector3(-10, 10, -10),
-    ambientColor:     0x0d0d2b,
-    ambientIntensity: -1,
-    skyColor:         0x7ea5c9,
-    fogColor:         0x7ea5c9,
-    fogNear:          25,
-    fogFar:           75,
-  },
-
-
-
-}
-const WEATHER_PRESETS = {
-  clear:    { ambientMultiplier: 1.0,  sunMultiplier: 1.0  },
-  overcast: { ambientMultiplier: 1.4,  sunMultiplier: 0.3  },
-  rain:     { ambientMultiplier: 1.2,  sunMultiplier: 0.1  },
-  storm:    { ambientMultiplier: 0.8,  sunMultiplier: 0.05 },
-}
-const OCEAN_PRESETS = {
-  calm:   { waveAmplitude: 0.1, waveFrequency: 0.5, waveSpeed: 0.3 },
-  choppy: { waveAmplitude: 0.4, waveFrequency: 1.2, waveSpeed: 0.8 },
-  rough:  { waveAmplitude: 0.9, waveFrequency: 2.0, waveSpeed: 1.5 },
-}
 
 export default class Environment {
     constructor() {
     this.orchestrator = new Orchestrator()
     this.scene = this.orchestrator.scene
-    //const loader = new Three.ObjectLoader()
-    //this.obj = this.loader.load('public/data/static.json')
-    //this.scene.add(object)
-    //console.log("Json data "+obj)
 
 
     // Lights

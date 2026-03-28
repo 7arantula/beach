@@ -1,71 +1,13 @@
 import * as THREE from 'three/webgpu'
 import MeshStandardNodeMaterial from 'three/src/materials/nodes/MeshStandardNodeMaterial.js'
 import Orchestrator from '../core/Orchestrator.js'
-
-export const BIKE_CAMERA_CONFIG = {
-  cameraPosition: new THREE.Vector3(0, 0, -10),
-  cameraTarget:   new THREE.Vector3(0, 1, 0),
-  swoopDuration:  2.0,
-  dampingFactor: 0.02,
-  
-}
-
-export const BIKE_FOG_CONFIG = {
-  fogNear: 10,
-  fogFar:  30,
-}
-
-const BIKE_PARTS = {
-  headlight: {
-    variants: [
-      { name: 'Hood',  path: '/models/clickable/bike/parts/headlight_hood.glb'  },
-      { name: 'Simple', path: '/models/clickable/bike/parts/headlight_simple.glb' },
-      { name: 'Mesh',   path: '/models/clickable/bike/parts/headlight_mesh.glb'   },
-    ]
-  },
-  wheels: {
-    variants: [
-      { name: 'Spokes',    path: '/models/clickable/bike/parts/wheels_spokes.glb'    },
-      { name: 'Fan Blade', path: '/models/clickable/bike/parts/wheels_fanblade.glb'  },
-    ]
-  },
-  mirrors: {
-    variants: [
-      { name: 'Top',    path: '/models/clickable/bike/parts/mirrors_top.glb'    },
-      { name: 'Handle', path: '/models/clickable/bike/parts/mirrors_handle.glb' },
-    ]
-  },
-  seat: {
-    variants: [
-      { name: 'Single',    path: '/models/clickable/bike/parts/seat_single.glb'    },
-      { name: 'Passenger', path: '/models/clickable/bike/parts/seat_passenger.glb' },
-    ]
-  },
-  // Toggles — just one GLB, visibility on/off
-  exhaust:   { toggle: true, path: '/models/clickable/bike/parts/exhaust.glb'   },
-  saddlebag: { toggle: true, path: '/models/clickable/bike/parts/saddlebag.glb' },
-  windshield:{ toggle: true, path: '/models/clickable/bike/parts/windshield.glb'},
-}
+import { BIKE_CAMERA_CONFIG, BIKE_FOG_CONFIG, BIKE_PARTS, BIKE_UI_CONFIG } from '../data/Data.js'
 
 const HEADLIGHT_VARIANTS = [
   { name: 'round',  geometry: () => new THREE.SphereGeometry(0.3, 8, 8)        },
   { name: 'square', geometry: () => new THREE.BoxGeometry(0.5, 0.3, 0.2)       },
   { name: 'pill',   geometry: () => new THREE.CapsuleGeometry(0.15, 0.4, 4, 8) },
 ]
-
-const BIKE_UI_CONFIG = {
-  title: 'Bike',
-  sections: [
-    { label: 'Headlight', type: 'cycle',  options: ['Hood', 'Simple', 'Mesh'],        onChange: null },
-    { label: 'Wheels',    type: 'cycle',  options: ['Spokes', 'Fan Blade'],             onChange: null },
-    { label: 'Mirrors',   type: 'cycle',  options: ['Top', 'Handle'],                  onChange: null },
-    { label: 'Seat',      type: 'cycle',  options: ['Single', 'Passenger'],             onChange: null },
-    { label: 'Exhaust',   type: 'toggle', onChange: null },
-    { label: 'Saddlebag', type: 'toggle', onChange: null },
-    { label: 'Windshield',type: 'toggle', onChange: null },
-    { label: 'Color',     type: 'color',  options: ['#222222', '#cc0000', '#0044cc', '#22aa44'], onChange: null },
-  ]
-}
 
 export default class BikeConfigurator {
   constructor() {

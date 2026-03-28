@@ -4,17 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/Addons.js'
 import Time from '../utils/Time.js'
 import { angleDiff } from '../utils/Math.js'
 import Orchestrator from '../core/Orchestrator.js'
+import { CAMERA_CONFIG, ORIGINAL_AZIMUTH } from '../data/Data.js'
 
-export const CAMERA_CONFIG = {
-  distance:      45,
-  height:        15,
-  fov:           40,
-  defaultAngle:  Math.PI / -0.75,
-  target:        new THREE.Vector3(0, 0, 0),
-  swoopDuration: 2.0,
-}
-
-const originalAzimuth = 2.09
 
 export default class Camera {
   constructor() {
@@ -92,7 +83,7 @@ export default class Camera {
 
   springBack() {
     const currentAzimuth = this.controls.getAzimuthalAngle()
-    const diff = angleDiff(originalAzimuth, currentAzimuth)
+    const diff = angleDiff(ORIGINAL_AZIMUTH, currentAzimuth)
     this.controls.rotateLeft(diff)
   }
 
