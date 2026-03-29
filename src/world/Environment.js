@@ -48,7 +48,7 @@ export default class Environment {
 _applyTimePreset(name, duration) {
   const p = TIME_PRESETS[name]
   if (!p || !this.lights.sun) return
-
+  if (this.orchestrator.ocean) this.orchestrator.ocean.setOceanPreset(p)
   const sunColor     = new THREE.Color(p.sunColor)
   const ambientColor = new THREE.Color(p.ambientColor)
   const skyColor     = new THREE.Color(p.skyColor)
@@ -98,6 +98,7 @@ _applyTimePreset(name, duration) {
 
  
   update(delta) {
+    if (this.orchestrator.ocean) this.orchestrator.ocean.update(delta)
     if (this.currentWeather === 'storm') {
       this._lightningTimer -= delta
       if (this._lightningTimer <= 0) {

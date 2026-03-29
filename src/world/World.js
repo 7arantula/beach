@@ -87,7 +87,7 @@ export default class World {
 
   loadDynamics() {
     const dynamics = [
-      { name: 'ocean', path: '/models/dynamic/ocean.glb' },
+      // { name: 'ocean', path: '/models/dynamic/ocean.glb' },
       // { name: 'birds',  path: '/models/dynamic/birds.glb'  },
       // { name: 'clouds', path: '/models/dynamic/clouds.glb' },
     ]
