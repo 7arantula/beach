@@ -26,26 +26,27 @@ export default class OceanShader {
     this.uTime          = uniform(0.0)
 
     // Depth
-    this.uDepthFalloff  = uniform(1)
-    this.uDepthStrength = uniform(1.5)
+    this.uDepthFalloff  = uniform(1.1)
+    this.uDepthStrength = uniform(0.1)
 
     // Colors
     this.uShallowColor  = uniform(new THREE.Color(0x52b8c4))
     this.uDeepColor     = uniform(new THREE.Color(0x062038))
     this.uFoamColor     = uniform(new THREE.Color(0xffffff))
+    this.uShallowOpacity = uniform(1.0)  // I will add Opacity when a good enough island is ready.
 
     // Foam
-    this.uFoamSpeed     = uniform(0.4)
-    this.uFoamWidth     = uniform(0.1)
-    this.uFoamStrength  = uniform(0.85)
+    this.uFoamSpeed     = uniform(0.3)
+    this.uFoamWidth     = uniform(0.3)
+    this.uFoamStrength  = uniform(0.75)
     this.uFoamFrequency = uniform(3.0)
 
     // Rain
     this.uRainIntensity = uniform(0.0)
 
     // Wave — future
-    this.uWaveSpeed     = uniform(0.3)
-    this.uWaveAmplitude = uniform(0.1)
+    this.uWaveSpeed     = uniform(10)
+    this.uWaveAmplitude = uniform(1.0)
 
     this.loadMesh()
   }
@@ -70,18 +71,13 @@ export default class OceanShader {
 
   buildMaterial() {
     const maskTexture = new THREE.TextureLoader().load('/textures/Ocean.png')
-
-    // PNG: black(0) = island, white(1) = deep ocean
-    // maskSample IS distFromShore — no inversion needed
     const distFromShore = texture(maskTexture, uv()).r
 
-    // ── Depth ─────────────────────────────────────────────────────
-    // 0 = shore (shallow), 1 = deep ocean
+    // Depth 
     const depthT    = smoothstep(float(0.0), this.uDepthFalloff, distFromShore)
     const baseColor = mix(this.uShallowColor, this.uDeepColor, depthT)
-
-    // ── Foam flowing TOWARD shore ─────────────────────────────────
-    // ADD time to move in direction of decreasing distFromShore (toward island)
+    const baseAlpha = mix(this.uShallowOpacity, float(1.0), depthT)
+    // Foam flowing TOWARD shore 
     const foamBand = fract(
       distFromShore.mul(this.uFoamFrequency).add(this.uTime.mul(this.uFoamSpeed))
     )
@@ -93,9 +89,7 @@ export default class OceanShader {
     )
 
     // Foam zone — gradient transition area only
-    const foamZone = smoothstep(float(0.05), float(0.25), distFromShore)
-      .mul(smoothstep(float(0.7), float(0.4), distFromShore))
-
+    const foamZone = smoothstep(float(0.05), float(0.25), distFromShore).mul(smoothstep(float(0.7), float(0.4), distFromShore))
     const foamAlpha     = foamLine.mul(foamZone).mul(this.uFoamStrength)
     const colorWithFoam = mix(baseColor, this.uFoamColor, foamAlpha)
 
@@ -111,10 +105,11 @@ export default class OceanShader {
 
     // ── Material ─────────────────────────────────────────────────
     const mat       = new MeshStandardNodeMaterial()
-    mat.colorNode   = vec4(finalColor, float(1))
+    mat.colorNode = vec4(finalColor, baseAlpha)
     mat.roughness   = 0.1
     mat.metalness   = 0.0
-    mat.transparent = false
+    mat.transparent = true
+    mat.depthWrite  = false
 
     return mat
   }
