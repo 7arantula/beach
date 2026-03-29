@@ -1,4 +1,3 @@
-// src/shaders/OceanShader.js
 import * as THREE from 'three/webgpu'
 import {
   uniform,
@@ -70,8 +69,10 @@ export default class OceanShader {
   }
 
   buildMaterial() {
-    const maskTexture = new THREE.TextureLoader().load('/textures/Ocean.png')
-    const distFromShore = texture(maskTexture, uv()).r
+    const OceanTexture = new THREE.TextureLoader().load('/textures/Ocean.png')
+    const RainTexture = new THREE.TextureLoader().load('/textures/Rain.png')
+    const distFromShore = texture(OceanTexture, uv()).r
+    const ripplePoints = texture(RainTexture, uv()).r
 
     // Depth 
     const depthT    = smoothstep(float(0.0), this.uDepthFalloff, distFromShore)
@@ -94,7 +95,7 @@ export default class OceanShader {
     const colorWithFoam = mix(baseColor, this.uFoamColor, foamAlpha)
 
     // ── Rain ripples ──────────────────────────────────────────────
-    const oceanArea = smoothstep(float(0.3), float(0.6), distFromShore)
+    const oceanArea = smoothstep(float(0.3), float(0.6), ripplePoints)
     const uvPos     = uv()
     const r1 = sin(uvPos.length().mul(60).sub(this.uTime.mul(4))).mul(0.5).add(0.5)
     const r2 = sin(uvPos.length().mul(60).sub(this.uTime.mul(4).add(2.1))).mul(0.5).add(0.5)
